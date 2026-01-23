@@ -14,10 +14,10 @@ alpha = Qext.gen()               # the generator "alpha"
 
 # Elliptic curve: y^2 = x^3 - 2  (Sage uses [a,b])
 E = EllipticCurve(QQ, [0,-2])
-
+print(E)
 # Base change to Qext
 Eext = E.base_extend(Qext)
-
+print(Eext)
 # Points
 P = E(3, 5)
 S = Eext(0, alpha)
