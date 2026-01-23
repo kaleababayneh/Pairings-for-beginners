@@ -30,6 +30,7 @@ def pi_q_on_E(EK, P, q):
 P = E(15,50)
 print("P1 =", P)
 print("pi_q(P1) =", pi_q_on_E(E, P, q))
+print(E.order())
 P2 = E2(2*u + 16, 30*u + 39)
 print("P2 =", P2)
 print("pi_q(P2) =", pi_q_on_E(E2, P2, q))
