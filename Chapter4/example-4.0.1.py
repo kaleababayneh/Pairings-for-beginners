@@ -19,7 +19,8 @@ print(E.order().factor())
 print(E_2.order().factor())
 
 P = E_2(2693, 4312)  
-Q = E_2(633*i + 6145, 7372*i + 109)
+i_ext = Fq_2.gen()  # Get the generator of the extension field
+Q = E_2(633*i_ext + 6145, 7372*i_ext + 109)
 
 r = 641
 
@@ -29,14 +30,27 @@ print(P.weil_pairing(Q, r)**r)
 a = 403
 b = 135
 
-print(a*P)
-print(b*Q)
+# print(a*P)
+# print(b*Q)
 
-print((a * P).weil_pairing(Q, r))
-print(P.weil_pairing(Q, r)**a)
+# print((a * P).weil_pairing(Q, r))
+# print(P.weil_pairing(Q, r)**a)
 
-print(P.weil_pairing(b * Q, r))
-print(P.weil_pairing(Q, r)**b)
+# print(P.weil_pairing(b * Q, r))
+# print(P.weil_pairing(Q, r)**b)
 
-print((a * P).weil_pairing(b * Q, r))
-print(P.weil_pairing(Q, r)**(a*b))
+
+# print((a * P).weil_pairing(b * Q, r))
+# print(P.weil_pairing(Q, r)**(a*b))
+
+# Get the abelian group structure of E_2
+G = E_2.abelian_group()
+print("Abelian group structure:", G)
+
+# Get the abstract group element corresponding to P
+P_abstract = G(P)
+
+# Generate the subgroup <P> using the built-in submodule method
+H = G.submodule([P_abstract])
+print("Subgroup <P>:", H)
+print("Order of subgroup:", H.order())
