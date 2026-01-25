@@ -16,14 +16,18 @@ m = 655
 B = Integer(m).digits(2)
 B_msb = list(reversed(B))
 
-def DBL(Pt):
-    if Pt == O:
+def DBL(P):
+    E = P.curve()
+    O = E(0)
+    if P == O:
         return O
-    xP, yP = Pt.xy()
-    if yP == 0:
-        return O 
 
-    lam = (3 * xP**2 + a) / (2 * yP)
+    xP, yP = P.xy()
+    if yP == 0:
+        return O  # tangent is vertical
+
+    a = E.a4()
+    lam = (3 * xP**2 + a) / (2 * yP)   # a=0
     nu = yP - lam * xP
     X = lam**2 - 2 * xP
     Y = -(lam * X + nu)

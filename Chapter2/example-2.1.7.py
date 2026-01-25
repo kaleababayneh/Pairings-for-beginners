@@ -16,21 +16,20 @@ print("P =", P)
 print("Q =", Q)
 
 def DBL(P):
-
+    E = P.curve()
+    O = E(0)
     if P == O:
         return O
 
     xP, yP = P.xy()
     if yP == 0:
-        # vertical tangent => point at infinity
-        return O
+        return O  # tangent is vertical
 
-    lam = (3*xP**2 + a) / (2*yP)
-    nu = yP - lam*xP
-    X = lam**2 - 2*xP
-    Y = -(lam*X + nu)
-
-    print("lambda =", lam, "nu =", nu)
+    a = E.a4()
+    lam = (3 * xP**2 + a) / (2 * yP)   # a=0
+    nu = yP - lam * xP
+    X = lam**2 - 2 * xP
+    Y = -(lam * X + nu)
     return E(X, Y)
 
 def ADD(P, Q):

@@ -1,18 +1,18 @@
 from sage.all import *
 
+q = random_prime(2**50, lbound=2**49)
+print(q)
 
-QQ = RationalField()
-QR = PolynomialRing(QQ,'i')
-i = QR.gen()
-f = i**2 + 2
+Fq = GF(q)
 
-Qext = QQ.extension(f,'i')
-i = Qext.gen()
-E = EllipticCurve(QQ,[0,-2])
-E_ext = E.base_extend(Qext)
+a = Fq.random_element()
+b = Fq.random_element()
+E = EllipticCurve(Fq, [a, b])
+
 
 def DBL(P):
     E = P.curve()
+    print(E)
     O = E(0)
     if P == O:
         return O
@@ -51,28 +51,18 @@ def ADD(P, Q):
     Y = -(lam * X + nu)
     return E(X, Y)
 
-P = E(3,5)
-S = E_ext(0,i)
 
-print(P)
-print(S)
-
-print("2*P == DBL(P) ?", (2*P == DBL(P)))
-
-Qpt = DBL(P)
-print("ADD(P, DBL(P)) == (P + DBL(P)) ?", (ADD(P, Qpt) == (P + Qpt)))
-
-Rpt = P + Qpt
-print("3*P == (P + DBL(P)) ?", (3*P == Rpt))
+P = E.random_point()
+Q = E.random_point()
 
 
-def int_to_sequence_base(n, base=2):
-    
-    n = Integer(n)
-    return n.digits(base)  # least-significant digit first
+l = DBL(P)
+print(l)
 
-for n in [10, 100, 1000]:
-    y = (n*P).xy()[1]              # y-coordinate
-    denom = y.denominator()
-    print(f"digits base 2 (LSB first) =", len(int_to_sequence_base(denom, 2)))
-    print()
+
+DP = E.divisor(P)
+DQ = E.divisor(Q)
+
+
+print(sum(c for c, p in DP))
+print(sum(c for c, p in DQ))
