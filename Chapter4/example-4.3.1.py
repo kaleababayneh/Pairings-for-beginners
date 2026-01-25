@@ -10,23 +10,21 @@ R = PolynomialRing(Fq, 'i')
 i = R.gen()
 f = i**2 + 1
 Fq_2 = GF(q**2, name='i', modulus=f)
-
+i = Fq_2.gen()
 E = EllipticCurve(Fq, [a, b])
+E2 = EllipticCurve(Fq, [a, -b])
 E_2 = EllipticCurve(Fq_2, [a, b])
+E2_2 = EllipticCurve(Fq_2, [a, -b])
 
-print(list(E.order().factor()))
-print(list(E_2.order().factor()))
 
 r = 3
 # print points in order 3 
 torsion_r = E(0).division_points(r)
 torsion_r_2 = E_2(0).division_points(r)
 
-print(torsion_r)
-print(torsion_r_2)
+torsion_r2 = E2(0).division_points(r)
+torsion_r2_2 = E2_2(0).division_points(r)
 
-print(len(torsion_r))
-print(len(torsion_r_2))
 
 
 def flower_generator(tors_pts):
@@ -37,7 +35,7 @@ def flower_generator(tors_pts):
     pts_in_pet = petals - 1
     T = []
     
-    for i in range(petals):
+    for _ in range(petals):
         S = S - V
         if not S:
             break
@@ -52,8 +50,52 @@ def flower_generator(tors_pts):
     return T
 
 
-print("\n--- Flower Generator ---")
 petals = flower_generator(torsion_r_2)
+petals2 = flower_generator(torsion_r2_2)
 
-for i, petal in enumerate(petals):
-    print(f"Petal {i+1}: {(petal)}")
+print("\n--- Flower Generator 1 ---")
+for idx, petal in enumerate(petals):
+    print(f"Petal {idx+1}: {(petal)}")
+
+print("\n--- Flower Generator 2 ---")
+for idx, petal in enumerate(petals2):
+    print(f"Petal {idx+1}: {(petal)}")
+
+######################
+# Distortion maps between E: y^2 = x^3 + b and E': y^2 = x^3 - b
+# These are isomorphisms over Fq_2 (where i exists with i^2 = -1)
+#
+# ψ: E'(Fq_2) → E(Fq_2)       is  (x, y) → (-x, i*y)
+# ψ⁻¹: E(Fq_2) → E'(Fq_2)     is  (x, y) → (-x, -i*y)  [since 1/i = -i]
+
+def PsiInv(P):
+    if P.is_zero():
+        return E2_2(0)
+    xP, yP = P.xy()
+    return E2_2(-xP, -i * yP)
+
+def Psi(Pt):
+    if Pt.is_zero():
+        return E_2(0)
+    xT, yT = Pt.xy()
+    return E_2(-xT, i * yT)
+
+# -----------------------------
+# Pick random non-infinity P in TorsPts; test PsiInv and Psi∘PsiInv
+# -----------------------------
+# P must be a point on E_2 (not just E)
+candidates = [P for P in torsion_r_2 if not P.is_zero()]
+P = random.choice(candidates)
+
+print("\nRandom non-infinity P on E(Fq_2):")
+print("P =", P)
+
+# Map P to the twist E'
+Pt = PsiInv(P)
+print("PsiInv(P) on E' =", Pt)
+
+# Map back from E' to E
+P_back = Psi(Pt)
+print("Psi(PsiInv(P)) =", P_back)
+
+print("Check Psi(PsiInv(P)) == P :", P_back == P)
